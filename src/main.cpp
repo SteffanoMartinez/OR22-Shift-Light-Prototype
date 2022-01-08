@@ -17,9 +17,9 @@ SystemOnChip esp;
 Terminal terminal;
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
+//**************************************** Tasks
 QueueHandle_t rpm_queue;
 
-//**************************************** Tasks
 void CAN_readTask(void *parameters);
 void RPM_displayTask(void *parameters);
 void gearDisplayTask(void *parameters);
@@ -63,7 +63,49 @@ void CAN_readTask(void *parameters)
 {
     while (1)
     {
+        int packetSize = CAN.parsePacket();
+
+        if (packetSize)
+        {
+            // received a packet
+            Serial.print("Received ");
+
+            if (CAN.packetExtended())
+            {
+                Serial.print("extended ");
+            }
+
+            if (CAN.packetRtr())
+            {
+                // Remote transmission request, packet contains no data
+                Serial.print("RTR ");
+            }
+
+            Serial.print("packet with id 0x");
+            Serial.print(CAN.packetId(), HEX);
+
+            if (CAN.packetRtr())
+            {
+                Serial.print(" and requested length ");
+                Serial.println(CAN.packetDlc());
+            }
+            else
+            {
+                Serial.print(" and length ");
+                Serial.println(packetSize);
+
+                // only print packet data for non-RTR packets
+                while (CAN.available())
+                {
+                    Serial.print((char)CAN.read());
+                }
+                Serial.println();
+            }
+
+            Serial.println();
+        }
     }
+}
 }
 
 void RPM_displayTask(void *parameters)
