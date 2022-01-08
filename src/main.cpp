@@ -62,6 +62,8 @@ void setup()
 void CAN_readTask(void *parameters)
 {
     String message = "";
+    uint8_t data[8];
+
     while (1)
     {
         int packet_size = CAN.parsePacket();
@@ -93,12 +95,26 @@ void CAN_readTask(void *parameters)
                 while (CAN.available())
                 {
                     message += (char)CAN.read();
+
+                    uint8_t data_length = CAN.readBytes(data, 8);
                 }
 
                 debugMessage(message);
             }
 
-            // TODO: Switch machine according to ECU's CAN Ids
+            // 3 Switch message and add data to corresponding queue
+            switch (message_id)
+            {
+            case 1907: // 0x773
+                debugMessage("RPM message received");
+                break;
+            case 1911:
+                debugMessage("Gear message received");
+                break;
+
+            default:
+                break;
+            }
         }
         else
         {
