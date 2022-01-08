@@ -146,6 +146,10 @@ void RPM_displayTask(void *parameters)
     }
 }
 
-void gearDisplayTask(void *parameters);
+void gearDisplayTask(void *parameters)
+{
+    while (1)
+        ;
+}
 
 void loop() {}
