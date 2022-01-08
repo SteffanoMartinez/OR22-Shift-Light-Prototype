@@ -61,48 +61,49 @@ void setup()
 
 void CAN_readTask(void *parameters)
 {
+    String message = "";
     while (1)
     {
-        int packetSize = CAN.parsePacket();
+        int packet_size = CAN.parsePacket();
 
-        if (packetSize)
+        if (packet_size)
         {
-            // received a packet
-            Serial.print("Received ");
+            // 1 Get message ID
+            long message_id = CAN.packetId();
 
+            // 2 Output the whole message to the terminal for debugging
             if (CAN.packetExtended())
-            {
-                Serial.print("extended ");
-            }
+                message += " EXT ";
+
+            message += "ID:0x";
+            message += String(message_id, HEX);
 
             if (CAN.packetRtr())
             {
-                // Remote transmission request, packet contains no data
-                Serial.print("RTR ");
-            }
-
-            Serial.print("packet with id 0x");
-            Serial.print(CAN.packetId(), HEX);
-
-            if (CAN.packetRtr())
-            {
-                Serial.print(" and requested length ");
-                Serial.println(CAN.packetDlc());
+                message += " RTR rqt length:";
+                message += CAN.packetDlc();
+                "\t";
             }
             else
             {
-                Serial.print(" and length ");
-                Serial.println(packetSize);
+                message += " msg. length:";
+                message += packet_size;
+                message += "\t data: ";
 
-                // only print packet data for non-RTR packets
                 while (CAN.available())
                 {
-                    Serial.print((char)CAN.read());
+                    message += (char)CAN.read();
                 }
-                Serial.println();
+
+                debugMessage(message);
             }
 
-            Serial.println();
+            // TODO: Switch machine according to ECU's CAN Ids
+        }
+        else
+        {
+            // if no message is detected on bus idle for some time
+            delay(10);
         }
     }
 }
