@@ -19,25 +19,6 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 QueueHandle_t rpm_queue;
 
-uint32_t ShiftLightColors[] = {
-    /// Green
-    pixels.Color(0, 150, 0),
-    pixels.Color(0, 150, 0),
-    pixels.Color(0, 150, 0),
-    // Yellow
-    pixels.Color(170, 60, 0),
-    pixels.Color(170, 60, 0),
-    pixels.Color(170, 60, 0),
-    // Orange
-    pixels.Color(240, 40, 0),
-    pixels.Color(240, 40, 0),
-    pixels.Color(200, 40, 0),
-    // Red
-    pixels.Color(255, 0, 0),
-    pixels.Color(255, 0, 0),
-    pixels.Color(255, 0, 0),
-};
-
 //**************************************** Tasks
 void CAN_readTask(void *parameters);
 void RPM_displayTask(void *parameters);
@@ -87,6 +68,25 @@ void CAN_readTask(void *parameters)
 
 void RPM_displayTask(void *parameters)
 {
+    uint32_t ShiftLightColors[] = {
+        /// Green
+        pixels.Color(0, 150, 0),
+        pixels.Color(0, 150, 0),
+        pixels.Color(0, 150, 0),
+        // Yellow
+        pixels.Color(170, 60, 0),
+        pixels.Color(170, 60, 0),
+        pixels.Color(170, 60, 0),
+        // Orange
+        pixels.Color(240, 40, 0),
+        pixels.Color(240, 40, 0),
+        pixels.Color(200, 40, 0),
+        // Red
+        pixels.Color(255, 0, 0),
+        pixels.Color(255, 0, 0),
+        pixels.Color(255, 0, 0),
+    };
+
     while (1)
     {
         pixels.clear(); // The first NeoPixel in a strand is #0, second is 1, all the way up
