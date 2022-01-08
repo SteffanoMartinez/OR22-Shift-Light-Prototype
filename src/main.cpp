@@ -106,7 +106,6 @@ void CAN_readTask(void *parameters)
         }
     }
 }
-}
 
 void RPM_displayTask(void *parameters)
 {
